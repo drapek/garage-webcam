@@ -31,9 +31,15 @@ while True:
     frame_data = data[:msg_size]
     data = data[msg_size:]
 
-    frame=pickle.loads(frame_data)
     print ("[LOG] Frame received")
-    cv2.imshow('frame',frame)
+    frame=pickle.loads(frame_data)
+    frame = cv2.imdecode(frame, cv2.cv.CV_LOAD_IMAGE_COLOR)  # decode from jpeg bytecode
+
+    # maybe show on website as bytecode
+    cv2.imwrite('tmp.jpeg', frame)
+
+    frame2 = cv2.imread('tmp.jpeg')
+    cv2.imshow('frame',frame2)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

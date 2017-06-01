@@ -17,7 +17,6 @@ class Streamer:
 
         cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 480)
-        cap.set(cv2.cv.CV_CAP_PROP_FOURCC, cv2.cv.CV_FOURCC('M', 'J', 'P', 'G'))
 
         cap.set(cv2.cv.CV_CAP_PROP_FPS, 1)
 
@@ -25,11 +24,12 @@ class Streamer:
             ret, frame = cap.read()
             if ret==True:
 
-                frame_serialized = pickle.dumps(frame)
+                ret, frame_jpeg = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 40])
+                frame_serialized = pickle.dumps(frame_jpeg)
                 print("[LOG] Frame size: {}", len(frame_serialized))
                 self.socket.sendall(struct.pack("q", len(frame_serialized)) + frame_serialized)
 
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(20) & 0xFF == ord('q'):
                     break
 
             else:
